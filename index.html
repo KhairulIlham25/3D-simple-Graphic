@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 2 Grafika Komputer - 3D Grafik Sederhana</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .title-container {
+            text-align: center;
+            padding: 20px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .canvas-container {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .canvas-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #feb47b;
+            font-size: 1.8rem;
+        }
+        
+        .canvas3d {
+            background: rgba(10, 15, 30, 0.7);
+            border-radius: 10px;
+            width: 100%;
+            height: 300px;
+            display: block;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .controls-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .control-group {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .control-group h3 {
+            color: #ff7e5f;
+            margin-bottom: 10px;
+        }
+        
+        .key {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ff7e5f;
+            border-radius: 10px;
+            margin: 5px;
+            line-height: 60px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .key:hover {
+            background: rgba(255, 126, 95, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .key:active {
+            background: rgba(255, 126, 95, 0.7);
+            transform: scale(0.95);
+        }
+        
+        .instructions {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            flex: 1;
+            min-width: 300px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .instructions h2 {
+            color: #feb47b;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .angle-display {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            width: 100%;
+        }
+        
+        .angle-value {
+            font-weight: bold;
+            color: #feb47b;
+        }
+        
+        .explanation {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .explanation h2 {
+            color: #feb47b;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        
+        .explanation p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 126, 95, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1;
+            min-width: 200px;
+            border: 1px solid rgba(255, 126, 95, 0.5);
+        }
+        
+        .feature-card h3 {
+            color: #feb47b;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .canvas-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .canvas-wrapper {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .canvas-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-container">
+            <h1>PROJECT 2 GRAFIKA KOMPUTER</h1>
+            <h2>3D Grafik Sederhana</h2>
+        </div>
+        
+        <div class="canvas-row">
+            <div class="canvas-wrapper">
+                <div class="canvas-container">
+                    <h2>PART 1: Wireframe</h2>
+                    <canvas id="canvas3d1" class="canvas3d" width="600" height="300"></canvas>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <div class="canvas-container">
+                    <h2>PART 2: Hidden Line Removal</h2>
+                    <canvas id="canvas3d2" class="canvas3d" width="600" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="angle-display">
+                <div>Rotasi X: <span class="angle-value" id="angleX">0.00</span> rad</div>
+                <div>Rotasi Y: <span class="angle-value" id="angleY">0.00</span> rad</div>
+            </div>
+            
+            <div class="controls-container">
+                <div class="controls">
+                    <div class="control-group">
+                        <h3>ROTASI SUMBU Y</h3>
+                        <div>
+                            <div class="key" id="keyA">A</div>
+                            <div class="key" id="keyD">D</div>
+                        </div>
+                        <p>Kiri / Kanan</p>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h3>ROTASI SUMBU X</h3>
+                        <div>
+                            <div class="key" id="keyW">W</div>
+                            <div class="key" id="keyS">S</div>
+                        </div>
+                        <p>Atas / Bawah</p> <!-- Diubah dari "Depan / Bawah" menjadi "Atas / Bawah" -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>PETUNJUK PENGGUNAAN</h2>
+            <ul>
+                <li><strong>Tombol A</strong>: Memutar objek ke kiri pada sumbu Y (rotasi sumbu Y ke kiri)</li>
+                <li><strong>Tombol D</strong>: Memutar objek ke kanan pada sumbu Y (rotasi sumbu Y ke kanan)</li>
+                <!-- Perbaikan petunjuk untuk W dan S -->
+                <li><strong>Tombol W</strong>: Memutar objek ke atas pada sumbu X (rotasi sumbu X ke atas)</li>
+                <li><strong>Tombol S</strong>: Memutar objek ke bawah pada sumbu X (rotasi sumbu X ke bawah)</li>
+                <li><strong>PART 1: Wireframe</strong>: Menampilkan semua garis rangka objek (tanpa hidden line removal)</li>
+                <li><strong>PART 2: Hidden Line Removal</strong>: Hanya menampilkan garis yang terlihat (garis yang tertutup tidak ditampilkan)</li>
+            </ul>
+        </div>
+        
+        <div class="explanation">
+            <h2>TEKNIK IMPLEMENTASI</h2>
+            <p>Aplikasi ini dibuat menggunakan JavaScript murni tanpa library 3D eksternal. Berikut teknik yang digunakan:</p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3>Proyeksi Ortografis</h3>
+                    <p>Menggunakan proyeksi ortografis untuk mengonversi titik 3D ke 2D dengan mengabaikan koordinat Z.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Rotasi 3D</h3>
+                    <p>Menggunakan matriks rotasi untuk transformasi objek pada sumbu X dan Y dengan perhitungan trigonometri.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Wireframe Modeling</h3>
+                    <p>Membuat model objek 3D dengan hanya menggambar garis-garis tepi balok.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Hidden Line Removal</h3>
+                    <p>Pada PART 2, hanya garis yang terlihat saja yang digambar dengan menggunakan teknik back-face culling.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Project 2 Grafika Komputer - Implementasi 3D Sederhana</p>
+        </footer>
+    </div>
+
+    <script>
+        // Inisialisasi canvas
+        const canvas1 = document.getElementById('canvas3d1');
+        const ctx1 = canvas1.getContext('2d');
+        const canvas2 = document.getElementById('canvas3d2');
+        const ctx2 = canvas2.getContext('2d');
+        
+        // Variabel global
+        let angleX = 0.10; //awal untuk X (tidak lurus)
+        let angleY = -0.50 // Sudut awal untuk Y (tidak lurus)
+        
+        // Dimensi objek (balok) - diperkecil
+        const width = 80;
+        const height = 60;
+        const depth = 100;
+        
+        // Titik-titik objek 3D (8 titik untuk balok)
+        const points = [
+            // Depan
+            { x: -width/2, y: -height/2, z: -depth/2 },
+            { x: width/2, y: -height/2, z: -depth/2 },
+            { x: width/2, y: height/2, z: -depth/2 },
+            { x: -width/2, y: height/2, z: -depth/2 },
+            
+            // Belakang
+            { x: -width/2, y: -height/2, z: depth/2 },
+            { x: width/2, y: -height/2, z: depth/2 },
+            { x: width/2, y: height/2, z: depth/2 },
+            { x: -width/2, y: height/2, z: depth/2 }
+        ];
+        
+        // Wajah objek (6 wajah untuk balok) dengan warna biru saja
+        const faces = [
+            // Depan
+            { points: [0, 3, 2, 1], color: '#2196F3' },
+            // Belakang
+            { points: [5, 6, 7, 4], color: '#2196F3' },
+            // Atas
+            { points: [3, 7, 6, 2], color: '#2196F3' },
+            // Bawah
+            { points: [0, 1, 5, 4], color: '#2196F3' },
+            // Kiri
+            { points: [0, 4, 7, 3], color: '#2196F3' },
+            // Kanan
+            { points: [1, 2, 6, 5], color: '#2196F3' }
+        ];
+        
+        // Fungsi rotasi titik pada sumbu X
+        function rotateX(point, angle) {
+            const y = point.y * Math.cos(angle) - point.z * Math.sin(angle);
+            const z = point.y * Math.sin(angle) + point.z * Math.cos(angle);
+            return { x: point.x, y, z };
+        }
+        
+        // Fungsi rotasi titik pada sumbu Y
+        function rotateY(point, angle) {
+            const x = point.x * Math.cos(angle) - point.z * Math.sin(angle);
+            const z = point.x * Math.sin(angle) + point.z * Math.cos(angle);
+            return { x, y: point.y, z };
+        }
+        
+        // Fungsi untuk menghitung normal wajah
+        function calculateNormal(face, rotatedPoints) {
+            const p0 = rotatedPoints[face.points[0]];
+            const p1 = rotatedPoints[face.points[1]];
+            const p2 = rotatedPoints[face.points[2]];
+            
+            // Hitung vektor U (p1 - p0) dan V (p2 - p0)
+            const ux = p1.x - p0.x;
+            const uy = p1.y - p0.y;
+            const uz = p1.z - p0.z;
+            
+            const vx = p2.x - p0.x;
+            const vy = p2.y - p0.y;
+            const vz = p2.z - p0.z;
+            
+            // Hitung cross product U x V untuk mendapatkan normal
+            const nx = uy * vz - uz * vy;
+            const ny = uz * vx - ux * vz;
+            const nz = ux * vy - uy * vx;
+            
+            // Normalisasi vektor
+            const length = Math.sqrt(nx * nx + ny * ny + nz * nz);
+            if (length === 0) return { x: 0, y: 0, z: 0 };
+            
+            return {
+                x: nx / length,
+                y: ny / length,
+                z: nz / length
+            };
+        }
+        
+        // Fungsi untuk menggambar objek
+        function drawObject(ctx, mode) {
+            // Bersihkan canvas
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            
+            // Hitung titik yang sudah dirotasi
+            const rotatedPoints = points.map(p => {
+                let rotated = rotateX(p, angleX);
+                rotated = rotateY(rotated, angleY);
+                return rotated;
+            });
+            
+            // Hitung kedalaman rata-rata untuk setiap wajah (painter's algorithm)
+            const facesWithDepth = faces.map(face => {
+                // Hitung kedalaman rata-rata berdasarkan titik-titik wajah
+                const zSum = face.points.reduce((sum, idx) => sum + rotatedPoints[idx].z, 0);
+                const zAvg = zSum / face.points.length;
+                return { face, zAvg };
+            });
+            
+            // Urutkan wajah dari belakang ke depan (zAvg terkecil ke terbesar)
+            facesWithDepth.sort((a, b) => a.zAvg - b.zAvg);
+            
+            // Gambar setiap wajah
+            for (const { face } of facesWithDepth) {
+                // Hitung vektor normal wajah
+                const normal = calculateNormal(face, rotatedPoints);
+                
+                // Untuk hidden line removal, hanya gambar wajah yang menghadap ke kamera
+                if (mode === 2) {
+                    // Vektor pandang adalah (0, 0, -1) karena kita melihat dari depan
+                    const dotProduct = normal.x * 0 + normal.y * 0 + normal.z * -1;
+                    
+                    // Jika dot product negatif, berarti wajah membelakangi kamera
+                    if (dotProduct <= 0) continue;
+                }
+                
+                // Proyeksi 3D ke 2D (proyeksi ortografis)
+                const projectedPoints = face.points.map(index => {
+                    const point = rotatedPoints[index];
+                    // Proyeksi dengan mengabaikan z (ortografis)
+                    return {
+                        x: point.x + ctx.canvas.width / 2,
+                        y: point.y + ctx.canvas.height / 2
+                    };
+                });
+                
+                // Gambar garis untuk wajah
+                ctx.beginPath();
+                ctx.moveTo(projectedPoints[0].x, projectedPoints[0].y);
+                
+                for (let i = 1; i < projectedPoints.length; i++) {
+                    ctx.lineTo(projectedPoints[i].x, projectedPoints[i].y);
+                }
+                
+                ctx.closePath();
+                
+                // Warna garis
+                ctx.strokeStyle = face.color;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+        
+        // Fungsi untuk menggambar kedua objek
+        function drawAllObjects() {
+            drawObject(ctx1, 1); // Mode wireframe (PART 1)
+            drawObject(ctx2, 2); // Mode hidden line (PART 2)
+            
+            // Update tampilan sudut
+            document.getElementById('angleX').textContent = angleX.toFixed(2);
+            document.getElementById('angleY').textContent = angleY.toFixed(2);
+        }
+        
+        // Event listeners untuk tombol kontrol
+        document.getElementById('keyA').addEventListener('click', () => {
+            angleY -= 0.1; // Memutar ke kiri
+            drawAllObjects();
+        });
+        
+        document.getElementById('keyD').addEventListener('click', () => {
+            angleY += 0.1; // Memutar ke kanan
+            drawAllObjects();
+        });
+        
+        // PERBAIKAN: Membalik arah rotasi untuk tombol W dan S
+        document.getElementById('keyW').addEventListener('click', () => {
+            angleX -= 0.1;// Memutar ke atas (sebelumnya ke depan)
+            drawAllObjects();
+        });
+        
+        document.getElementById('keyS').addEventListener('click', () => {
+            angleX += 0.1;//utar ke bawah (sebelumnya ke bawah tapi arah terbalik)
+            drawAllObjects();
+        });
+        
+        // Event listeners untuk keyboard
+        document.addEventListener('keydown', (e) => {
+            switch(e.key.toLowerCase()) {
+                case 'a':
+                    angleY -= 0.1; // Memutar ke kiri
+                    drawAllObjects();
+                    break;
+                case 'd':
+                    angleY += 0.1; // Memutar ke kanan
+                    drawAllObjects();
+                    break;
+                // PERBAIKAN: Membalik arah untuk W dan S
+                case 'w':
+                    angleX -= 0.1;// Memutar ke atas (sebelumnya ke depan)
+                    drawAllObjects();
+                    break;
+                case 's':
+                    angleX += 0.1;//Memutar ke bawah (sebelumnya ke bawah tapi arah terbalik)
+                    drawAllObjects();
+                    break;
+            }
+        });
+        
+        // Gambar objek pertama kali
+        drawAllObjects();
+    </script>
+</body>
+</html>
